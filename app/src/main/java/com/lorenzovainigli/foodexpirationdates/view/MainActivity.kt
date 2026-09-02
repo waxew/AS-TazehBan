@@ -26,6 +26,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import androidx.work.ExistingWorkPolicy
 import com.lorenzovainigli.foodexpirationdates.BuildConfig
+import com.lorenzovainigli.foodexpirationdates.analytics.AnalyticsTracker
 import com.lorenzovainigli.foodexpirationdates.analytics.LocalAnalyticsTracker
 import com.lorenzovainigli.foodexpirationdates.model.LocaleHelper
 import com.lorenzovainigli.foodexpirationdates.model.NotificationManager.Companion.scheduleDailyNotification
@@ -33,9 +34,10 @@ import com.lorenzovainigli.foodexpirationdates.model.NotificationManager.Compani
 import com.lorenzovainigli.foodexpirationdates.model.ReviewManager
 import com.lorenzovainigli.foodexpirationdates.model.repository.PreferencesRepository
 import com.lorenzovainigli.foodexpirationdates.model.repository.PreferencesRepository.Companion.checkAndSetSecureFlags
+import com.lorenzovainigli.foodexpirationdates.ui.component.AsNavigationDrawer
 import com.lorenzovainigli.foodexpirationdates.ui.theme.FoodExpirationDatesTheme
-import com.lorenzovainigli.foodexpirationdates.analytics.AnalyticsTracker
 import com.lorenzovainigli.foodexpirationdates.view.composable.MyScaffold
+import com.lorenzovainigli.foodexpirationdates.view.composable.screen.Screen
 import com.lorenzovainigli.foodexpirationdates.viewmodel.ExpirationDatesViewModel
 import com.lorenzovainigli.foodexpirationdates.viewmodel.PreferencesViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -80,7 +82,6 @@ class MainActivity : ComponentActivity() {
         val context = this
 
         setContent {
-
             val prefsViewModel: PreferencesViewModel = viewModel()
             val darkThemeState = prefsViewModel.getThemeMode(context).collectAsState().value
             val dynamicColorsState = prefsViewModel.getDynamicColors(context).collectAsState().value
@@ -89,6 +90,7 @@ class MainActivity : ComponentActivity() {
                 PreferencesRepository.Companion.ThemeMode.DARK.ordinal -> true
                 else -> isSystemInDarkTheme()
             }
+
             FoodExpirationDatesTheme(
                 darkTheme = isInDarkTheme,
                 dynamicColor = dynamicColorsState
@@ -110,30 +112,51 @@ class MainActivity : ComponentActivity() {
                         detectDarkMode = { _ -> isInDarkTheme }
                     )
                 )
+
                 Surface(
-                    modifier = Modifier
-                        .fillMaxSize(),
+                    modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val navController = rememberNavController()
-                    val showSnackbar = remember {
-                        mutableStateOf(false)
-                    }
+                    val showSnackbar = remember { mutableStateOf(false) }
                     var isSearchActive by remember { mutableStateOf(false) }
+
                     CompositionLocalProvider(
                         LocalAnalyticsTracker provides analyticsTracker
                     ) {
-                        MyScaffold(
-                            activity = this,
-                            navController = navController,
-                            showSnackbar = showSnackbar,
-                            onSearchIconClick = { isSearchActive = true }
+                        // The AS drawer wraps the existing application shell without replacing
+                        // its bottom navigation, search, barcode scanner, or business screens.
+                        AsNavigationDrawer(
+                            onHome = {
+                                navController.navigate(Screen.MainScreen.route) {
+                                    launchSingleTop = true
+                                    popUpTo(Screen.MainScreen.route) { inclusive = false }
+                                }
+                            },
+                            onSettings = {
+                                navController.navigate(Screen.SettingsScreen.route) {
+                                    launchSingleTop = true
+                                }
+                            },
+                            onTheme = {
+                                // Appearance controls already live in the app settings page.
+                                navController.navigate(Screen.SettingsScreen.route) {
+                                    launchSingleTop = true
+                                }
+                            },
                         ) {
-                            Navigation(
+                            MyScaffold(
                                 activity = this,
                                 navController = navController,
-                                reviewManager = reviewManager
-                            )
+                                showSnackbar = showSnackbar,
+                                onSearchIconClick = { isSearchActive = true }
+                            ) {
+                                Navigation(
+                                    activity = this,
+                                    navController = navController,
+                                    reviewManager = reviewManager
+                                )
+                            }
                         }
                     }
                 }
@@ -149,5 +172,4 @@ class MainActivity : ComponentActivity() {
             super.attachBaseContext(newBase)
         }
     }
-
 }
