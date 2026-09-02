@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">تواريخ انتهاء صلاحية الطعام</string>
-    <string name="app_name_short">انتهاء صلاحية الطعام</string>
+    <string name="app_name">تازه‌بان</string>
+    <string name="app_name_short">تازه‌بان</string>
     <string name="n_days_ago">%1$d أيام مضت</string>
     <string name="yesterday">أمس</string>
     <string name="today">اليوم</string>

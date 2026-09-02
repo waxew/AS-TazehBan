@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">食品の期限リマインダー</string>
-    <string name="app_name_short">食品の期限</string>
+    <string name="app_name">تازه‌بان</string>
+    <string name="app_name_short">تازه‌بان</string>
     <string name="n_days_ago">%1$d日前</string>
     <string name="yesterday">昨日</string>
     <string name="today">今日</string>

@@ -31,13 +31,13 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.lorenzovainigli.foodexpirationdates"
+        applicationId = "com.asteam.tazehban"
         minSdk = 26
         targetSdk = 37
-        versionCode = 61
-        versionName = "2.11"
+        versionCode = 62
+        versionName = "2.12.0"
 
-        base.archivesName.set("FoodExpirationDates-$versionName")
+        base.archivesName.set("AS-TazehBan-$versionName")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

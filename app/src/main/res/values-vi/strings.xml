@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Ngày thực phẩm hết hạn</string>
-    <string name="app_name_short">Thực phẩm hết hạn</string>
+    <string name="app_name">تازه‌بان</string>
+    <string name="app_name_short">تازه‌بان</string>
     <string name="n_days_ago">%1$d ngày trước</string>
     <string name="yesterday">Hôm qua</string>
     <string name="today">Hôm nay</string>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">खाद्य सामग्री की समाप्ति तिथियाँ</string>
-    <string name="app_name_short">खाद्य सामग्री की समाप्ति</string>
+    <string name="app_name">تازه‌بان</string>
+    <string name="app_name_short">تازه‌بان</string>
     <string name="n_days_ago">%1$d दिन पहले</string>
     <string name="yesterday">कल</string>
     <string name="today">आज</string>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Lebensmittelverfallsdatum</string>
-    <string name="app_name_short">Lebensmittelverfall</string>
+    <string name="app_name">تازه‌بان</string>
+    <string name="app_name_short">تازه‌بان</string>
     <string name="n_days_ago">Vor %1$d Tag(en)</string>
     <string name="yesterday">Gestern</string>
     <string name="today">Heute</string>

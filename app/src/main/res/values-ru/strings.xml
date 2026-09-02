@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Сроки годности еды</string>
-    <string name="app_name_short">Сроки годности</string>
+    <string name="app_name">تازه‌بان</string>
+    <string name="app_name_short">تازه‌بان</string>
     <string name="n_days_ago">%1$d дней назад</string>
     <string name="yesterday">Вчера</string>
     <string name="today">Сегодня</string>

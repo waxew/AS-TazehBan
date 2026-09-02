@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">食物有效期限</string>
+    <string name="app_name">تازه‌بان</string>
     <string name="n_days_ago">%1$d 天前</string>
     <string name="yesterday">昨天</string>
     <string name="today">今天</string>
@@ -8,7 +8,7 @@
     <string name="in_n_days">%1$d 天後</string>
     <string name="edit_item">編輯物品</string>
     <string name="add_item">新增物品</string>
-    <string name="app_name_short">食物有效期限</string>
+    <string name="app_name_short">تازه‌بان</string>
     <string name="food_name">食物名稱</string>
     <string name="expiration_date">到期日</string>
     <string name="please_select_a_date">請選擇日期</string>

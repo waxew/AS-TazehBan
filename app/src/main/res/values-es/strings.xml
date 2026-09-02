@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Fecha de Caducidad de los Alimentos</string>
-    <string name="app_name_short">Caducidad de los alimentos</string>
+    <string name="app_name">تازه‌بان</string>
+    <string name="app_name_short">تازه‌بان</string>
     <string name="n_days_ago">Hace %1$d días</string>
     <string name="yesterday">Ayer</string>
     <string name="today">Hoy</string>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Food Expiration Dates</string>
-    <string name="app_name_short">Food Expirations</string>
+    <string name="app_name">تازه‌بان</string>
+    <string name="app_name_short">تازه‌بان</string>
     <string name="n_days_ago">%1$d dni temu</string>
     <string name="yesterday">Wczoraj</string>
     <string name="today">Dziś</string>
