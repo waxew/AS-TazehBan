@@ -1,0 +1,61 @@
+name: AS Brand Bootstrap
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  brand:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Apply AS Team product identity once
+        shell: bash
+        run: |
+          if [ -f .as/brand-v1 ]; then
+            echo "AS brand bootstrap already applied."
+            exit 0
+          fi
+
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          gradle = Path('app/build.gradle.kts')
+          text = gradle.read_text(encoding='utf-8')
+          text = text.replace('applicationId = "com.lorenzovainigli.foodexpirationdates"', 'applicationId = "com.asteam.tazehban"')
+          text = text.replace('versionCode = 61', 'versionCode = 62')
+          text = text.replace('versionName = "2.11"', 'versionName = "2.12.0"')
+          text = text.replace('base.archivesName.set("FoodExpirationDates-$versionName")', 'base.archivesName.set("AS-TazehBan-$versionName")')
+          gradle.write_text(text, encoding='utf-8')
+
+          manifest = Path('app/src/main/AndroidManifest.xml')
+          text = manifest.read_text(encoding='utf-8')
+          text = re.sub(r'\s*<uses-permission android:name="com\.google\.android\.gms\.permission\.AD_ID"\s*/>', '', text)
+          manifest.write_text(text, encoding='utf-8')
+
+          # Product name is intentionally consistent in every locale; the screen copy can be
+          # translated independently while store/install identity stays AS Team-owned.
+          for strings in Path('app/src/main/res').glob('values*/strings.xml'):
+              text = strings.read_text(encoding='utf-8')
+              text = re.sub(r'<string name="app_name">.*?</string>', '<string name="app_name">تازه‌بان</string>', text)
+              text = re.sub(r'<string name="app_name_short">.*?</string>', '<string name="app_name_short">تازه‌بان</string>', text)
+              strings.write_text(text, encoding='utf-8')
+
+          marker = Path('.as/brand-v1')
+          marker.parent.mkdir(parents=True, exist_ok=True)
+          marker.write_text('AS-TazehBan\npackage=com.asteam.tazehban\n', encoding='utf-8')
+          PY
+
+          git config user.name "AS Team Automation"
+          git config user.email "AS.Developers.Support@Gmail.Com"
+          git add app/build.gradle.kts app/src/main/AndroidManifest.xml app/src/main/res .as/brand-v1
+          git commit -m "brand: apply TazehBan identity and package" || exit 0
+          git push
