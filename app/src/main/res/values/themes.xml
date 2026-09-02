@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.FoodExpirationDates" parent="Theme.Material3.DayNight.NoActionBar" />
+    <style name="Theme.ASTazehBan" parent="Theme.Material3.DayNight.NoActionBar" />
 
-    <style name="Theme.CustomSplashScreenTheme" parent="Theme.SplashScreen">
+    <style name="Theme.ASTazehBan.Splash" parent="Theme.SplashScreen">
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash</item>
-        <item name="postSplashScreenTheme">@style/Theme.FoodExpirationDates</item>
+        <item name="postSplashScreenTheme">@style/Theme.ASTazehBan</item>
     </style>
 
 </resources>
