@@ -1,0 +1,106 @@
+name: AS Package Migration
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Migrate package and source paths once
+        shell: bash
+        run: |
+          if [ -f .as/package-migration-v1 ]; then
+            echo "Package migration already applied."
+            exit 0
+          fi
+
+          python3 - <<'PY'
+          from pathlib import Path
+          import shutil
+
+          OLD = 'com.lorenzovainigli.foodexpirationdates'
+          NEW = 'com.asteam.tazehban'
+
+          text_exts = {'.kt', '.kts', '.xml', '.json', '.pro', '.properties', '.md', '.yml', '.yaml', '.txt'}
+          roots = [Path('app'), Path('feature')]
+          for root in roots:
+              if not root.exists():
+                  continue
+              for p in root.rglob('*'):
+                  if not p.is_file() or p.suffix not in text_exts:
+                      continue
+                  try:
+                      text = p.read_text(encoding='utf-8')
+                  except UnicodeDecodeError:
+                      continue
+                  if OLD in text:
+                      p.write_text(text.replace(OLD, NEW), encoding='utf-8')
+
+          # Move source package directories while preserving all subpackages.
+          for source_set in ('main', 'test', 'androidTest'):
+              old_dir = Path(f'app/src/{source_set}/java/com/lorenzovainigli/foodexpirationdates')
+              new_dir = Path(f'app/src/{source_set}/java/com/asteam/tazehban')
+              if old_dir.exists():
+                  new_dir.parent.mkdir(parents=True, exist_ok=True)
+                  if new_dir.exists():
+                      for child in old_dir.iterdir():
+                          target = new_dir / child.name
+                          if target.exists() and child.is_dir():
+                              shutil.copytree(child, target, dirs_exist_ok=True)
+                              shutil.rmtree(child)
+                          else:
+                              shutil.move(str(child), str(target))
+                      shutil.rmtree(old_dir)
+                  else:
+                      shutil.move(str(old_dir), str(new_dir))
+
+          # Room schema directory follows the fully-qualified database class name.
+          old_schema = Path('app/schemas/com.lorenzovainigli.foodexpirationdates.model.AppDatabase')
+          new_schema = Path('app/schemas/com.asteam.tazehban.model.AppDatabase')
+          if old_schema.exists() and not new_schema.exists():
+              shutil.move(str(old_schema), str(new_schema))
+
+          marker = Path('.as/package-migration-v1')
+          marker.parent.mkdir(parents=True, exist_ok=True)
+          marker.write_text('AS-TazehBan\npackage=com.asteam.tazehban\n', encoding='utf-8')
+          PY
+
+      - name: Ensure mock Google services matches application id
+        shell: bash
+        run: |
+          if [ -f app/mock-google-services.json ]; then
+            sed -i 's/com\.lorenzovainigli\.foodexpirationdates/com.asteam.tazehban/g' app/mock-google-services.json
+          fi
+
+      - name: Prepare Google services config for full build
+        shell: bash
+        run: |
+          if [ ! -f app/google-services.json ] && [ -f app/mock-google-services.json ]; then
+            cp app/mock-google-services.json app/google-services.json
+          fi
+
+      - name: Build debug variant before commit
+        shell: bash
+        run: |
+          chmod +x gradlew
+          ./gradlew :app:assembleFullDebug --stacktrace
+
+      - name: Commit successful migration
+        shell: bash
+        run: |
+          rm -f app/google-services.json
+          git config user.name "AS Team Automation"
+          git config user.email "AS.Developers.Support@Gmail.Com"
+          git add -A
+          git commit -m "refactor: migrate TazehBan package to com.asteam.tazehban" || exit 0
+          git push
